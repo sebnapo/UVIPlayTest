@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Code challenge UVI Play {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row marginElement">
+            <div class="col-12">
+                <h1>Internship coding test - UVI Play - NAPOLEON Sebastien </h1>
+            </div>
+        </div>
+        <div class="row marginElement">
+      		<table id="example" class="display nowrap" style="width:100%">
+        		<thead>
+          			<tr>
+            			<th>Book name</th>
+            			<th>Book genre</th>
+            			<th>Author name</th>
+            			<th>Author gender</th>
+            			<th>Publish date</th>
+          			</tr>
+        		</thead>
+      		</table>
+        </div>
+        <div class="row marginElement">
+            <div class="input-group offset-7 col-5">
+                <select class="custom-select" id="inputGroupSelectBook">
+                    <option selected>Choose a book genre</option>
+                </select>
+                <div class="input-group-append">
+                    <label class="input-group-text" for="inputGroupSelectBook">Filter by book genre</label>
+                </div>
+            </div>
+            <div class="input-group offset-7 col-5">
+                <select class="custom-select" id="inputGroupSelectGender">
+                    <option selected>Choose a book gender</option>
+                    <option value="F">F</option>
+                    <option value="M">M</option>
+                </select>
+                <div class="input-group-append">
+                    <label class="input-group-text" for="inputGroupSelectGender">Filter by author gender</label>
+                </div>
+            </div>
+            <div class="offset-10 col-2">
+                <button type="button" id="reset" class="btn btn-secondary">Reset the list</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var listOfBooks = {{ list|json_encode() |raw }};
+            var listOfBooksTmp = listOfBooks;
+            var bookGenres = ['Tragedy','Science fiction','Fantasy','Mythology','Adventure','Mystery','Drama','Finance','Horror','Satire','Romance','Thriller'];
+            for (var i = 0; i < 12; i++) {
+                $("#inputGroupSelectBook").append("<option value=\"" + bookGenres[i] + "\">"+ bookGenres[i] + " </option>");
+            }
+
+            var cpt1 = 0;
+            var cpt2 = 500;
+            var table = $('#example').DataTable( {
+                serverSide: true,
+                searching: false,
+                columns: [
+                    { type: 'html' },
+                    { type: 'html' },
+                    { type: 'html' },
+                    { type: 'html' },
+                    { type: 'date' }
+                ],
+                ajax: function ( data, callback, settings ) {
+                    var out = [];
+                    for ( var i=cpt1; i<cpt2 ; i++ ) {
+                        out.push( [ listOfBooks[i].name, listOfBooks[i].genre, listOfBooks[i].authorName, listOfBooks[i].authorGenre, new Date(listOfBooks[i].publishDate.date).toISOString().split('T')[0] ] );
+                    }
+                    cpt1+=500;
+                    cpt2+=500;
+                    setTimeout( function () {
+                        callback( {
+                            draw: data.draw,
+                            data: out,
+                            recordsTotal: 1000000,
+                            recordsFiltered: 1000000
+                        } );
+                    }, 50 );
+                },
+                scrollY: 400,
+                scroller: {
+                    loadingIndicator: true
+            },
+            stateSave: true
+            } );
+
+            $('#inputGroupSelectBook').on('change',function(){
+                listOfBooks = listOfBooksTmp.filter(book => book.genre == this.value )
+                table.ajax.reload();
+            });
+
+            $('#inputGroupSelectGender').on('change',function(){
+                listOfBooks = listOfBooksTmp.filter(book => book.authorGenre == this.value )
+                table.ajax.reload();
+            });
+
+            $('#reset').on('click', function(){
+                listOfBooks = listOfBooksTmp;
+                table.ajax.reload();
+            })
+
+            $("#example_length").hide();
+            var nameAsc = new Boolean(false);
+            $("th:nth-child(1").on('click',function(){
+                const myOrderedArray = _.sortBy(listOfBooksTmp, o => o.name);
+                if(!nameAsc){
+                    listOfBooks = myOrderedArray.reverse()
+                    nameAsc = true;
+                } else {
+                    listOfBooks = myOrderedArray;
+                    nameAsc = false;
+                }
+                table.ajax.reload();
+            })
+
+            var genreAsc = new Boolean(false);
+            $("th:nth-child(2").on('click',function(){
+                const myOrderedArray = _.sortBy(listOfBooksTmp, o => o.genre);
+                if(!genreAsc){
+                    listOfBooks = myOrderedArray.reverse()
+                    genreAsc = true;
+                } else {
+                    listOfBooks = myOrderedArray;
+                    genreAsc = false;
+                }
+                table.ajax.reload();
+            })
+
+
+            var ANameAsc = new Boolean(false);
+            $("th:nth-child(3").on('click',function(){
+                const myOrderedArray = _.sortBy(listOfBooksTmp, o => o.authorName);
+                if(!ANameAsc){
+                    listOfBooks = myOrderedArray.reverse()
+                    ANameAsc = true;
+                } else {
+                    listOfBooks = myOrderedArray;
+                    ANameAsc = false;
+                }
+                table.ajax.reload();
+            })
+
+            var AGenderAsc = new Boolean(false);
+            $("th:nth-child(4").on('click',function(){
+                const myOrderedArray = _.sortBy(listOfBooksTmp, o => o.authorGenre);
+                if(!AGenderAsc){
+                    listOfBooks = myOrderedArray.reverse()
+                    AGenderAsc = true;
+                } else {
+                    listOfBooks = myOrderedArray;
+                    AGenderAsc = false;
+                }
+                table.ajax.reload();
+            })
+
+            var dateAsc = new Boolean(false);
+            $("th:nth-child(5").on('click',function(){
+                const myOrderedArray = _.sortBy(listOfBooksTmp, o => new Date(o.publishDate.date).toISOString().split('T')[0]);
+                if(!dateAsc){
+                    listOfBooks = myOrderedArray.reverse()
+                    dateAsc = true;
+                } else {
+                    listOfBooks = myOrderedArray;
+                    dateAsc = false;
+                }
+                table.ajax.reload();
+            })
+        } );
+    </script>
+{% endblock %}

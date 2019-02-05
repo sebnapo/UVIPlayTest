@@ -1,0 +1,48 @@
+@import "~bootstrap/scss/bootstrap";
+
+.table-fixed{
+  width: 100%;
+  background-color: #f3f3f3;
+  tbody{
+    height:200px;
+    overflow-y:auto;
+    width: 100%;
+    }
+  thead,tbody,tr,td,th{
+    display:block;
+  }
+  tbody{
+    td{
+      float:left;
+    }
+  }
+  thead {
+    tr{
+      th{
+        float:left;
+       background-color: #f39c12;
+       border-color:#e67e22;
+      }
+    }
+  }
+}
+
+div.dataTables_paginate {
+  display:none;
+}
+
+#example_wrapper {
+  width:100%;
+}
+
+.marginElement {
+  margin-top: 30px;
+}
+
+body {
+  background-color: #f7f7f7;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
