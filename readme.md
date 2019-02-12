@@ -26,7 +26,11 @@ Run composer install command
 ```
 
 ```
-Run php bin/console doctrine:fixtures:load and move the data.json file created at the root to public/data/ 
+Take the downloaded data.json file i've sent to you and put it in the public folder 
+```
+
+```
+To generate the css part, you have to run the "yarn install" commandand then run the command "yarn run encore dev" 
 ```
 
 ```
@@ -37,9 +41,6 @@ Run php bin/console server:run
 You can then go to the http://127.0.0.1:8000/books page and here is my project.
 ```
 
-```
-In case the css isn't build, or you wanted to change it, just modify the assets/css/app.scss and then run the command yarn encore dev 
-```
 ## Built With
 
 * [Symfony](https://symfony.com/doc/current/index.html#gsc.tab=0) - The web framework used
